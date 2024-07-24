@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* .hidden {
+            display: none;
+        } */
+
+        ul{
+            display: flex;
+        justify-content: space-around;
+        }
+
+        ul li{
+            list-style: none;
+        }
+        a {
+            text-decoration: none !important;
+            color: black !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Simple Quiz App</h1>
+        <div class="category">
+            <h3>category</h3>
+            <ul class="list-style-type-none">
+                <li style="text-decoration: underline;"><a href="#" target="" rel="noopener noreferrer">Random</a></li>
+                <li><a href="./entertainmentQuiz.html">Entertainment</a></li>
+                <li><a href="./sportQuiz.html">Sport</a></li>
+            </ul>
+        </div>
+        <hr>
+        <div id="quiz-container" class="mt-4">
+            <div id="question-container" class="mb-4">
+                <h3 id="question">Question text</h3>
+                <div id="answer-buttons" class="btn-group-vertical"></div>
+            </div>
+            <div class="d-flex justify-content-between">
+                <button id="prev-button" class="btn btn-secondary hidden">Previous</button>
+                <button id="next-button" class="btn btn-primary hidden">Next</button>
+            </div>
+        </div>
+        <div id="result-container d-flex justify-content-center" class="hidden">
+            <h3>Your Score: <span id="score"></span></h3>
+            <button id="restart-button" class="btn btn-danger text-center" >Restart</button>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        const questions = [
+            {
+                question: 'What is the capital of France?',
+                answers: [
+                    { text: 'Paris', correct: true },
+                    { text: 'London', correct: false },
+                    { text: 'Berlin', correct: false },
+                    { text: 'Madrid', correct: false }
+                ]
+            },
+            {
+                question: 'Who is the current president of the United States?',
+                answers: [
+                    { text: 'Joe Biden', correct: true },
+                    { text: 'Donald Trump', correct: false },
+                    { text: 'Barack Obama', correct: false },
+                    { text: 'George Bush', correct: false }
+                ]
+            },
+            {
+                question: 'Which planet is known as the Red Planet?',
+                answers: [
+                    { text: 'Mars', correct: true },
+                    { text: 'Jupiter', correct: false },
+                    { text: 'Saturn', correct: false },
+                    { text: 'Venus', correct: false }
+                ]
+            },
+            {
+                question: 'What is the largest ocean on Earth?',
+                answers: [
+                    { text: 'Pacific Ocean', correct: true },
+                    { text: 'Atlantic Ocean', correct: false },
+                    { text: 'Indian Ocean', correct: false },
+                    { text: 'Arctic Ocean', correct: false }
+                ]
+            },
+            {
+                question: 'In which year did the Titanic sink?',
+                answers: [
+                    { text: '1912', correct: true },
+                    { text: '1905', correct: false },
+                    { text: '1915', correct: false },
+                    { text: '1920', correct: false }
+                ]
+            },
+            {
+                question: 'What is the capital of Japan?',
+                answers: [
+                    { text: 'Tokyo', correct: true },
+                    { text: 'Kyoto', correct: false },
+                    { text: 'Osaka', correct: false },
+                    { text: 'Nagoya', correct: false }
+                ]
+            },
+            {
+                question: 'Who wrote "Romeo and Juliet"?',
+                answers: [
+                    { text: 'William Shakespeare', correct: true },
+                    { text: 'Jane Austen', correct: false },
+                    { text: 'Charles Dickens', correct: false },
+                    { text: 'Mark Twain', correct: false }
+                ]
+            },
+            {
+                question: 'Which country won the FIFA World Cup in 2018?',
+                answers: [
+                    { text: 'France', correct: true },
+                    { text: 'Croatia', correct: false },
+                    { text: 'Brazil', correct: false },
+                    { text: 'Germany', correct: false }
+                ]
+            },
+            {
+                question: 'What is the smallest country in the world?',
+                answers: [
+                    { text: 'Vatican City', correct: true },
+                    { text: 'Monaco', correct: false },
+                    { text: 'San Marino', correct: false },
+                    { text: 'Liechtenstein', correct: false }
+                ]
+            },
+            {
+                question: 'Who painted the Mona Lisa?',
+                answers: [
+                    { text: 'Leonardo da Vinci', correct: true },
+                    { text: 'Vincent van Gogh', correct: false },
+                    { text: 'Pablo Picasso', correct: false },
+                    { text: 'Claude Monet', correct: false }
+                ]
+            },
+            {
+                question: 'What is the main ingredient in guacamole?',
+                answers: [
+                    { text: 'Avocado', correct: true },
+                    { text: 'Tomato', correct: false },
+                    { text: 'Onion', correct: false },
+                    { text: 'Cilantro', correct: false }
+                ]
+            },
+            {
+                question: 'Which country is known as the Land of the Rising Sun?',
+                answers: [
+                    { text: 'Japan', correct: true },
+                    { text: 'China', correct: false },
+                    { text: 'South Korea', correct: false },
+                    { text: 'India', correct: false }
+                ]
+            },
+            {
+                question: 'What is the largest planet in our solar system?',
+                answers: [
+                    { text: 'Jupiter', correct: true },
+                    { text: 'Saturn', correct: false },
+                    { text: 'Neptune', correct: false },
+                    { text: 'Earth', correct: false }
+                ]
+            },
+            {
+                question: 'Which element has the chemical symbol O?',
+                answers: [
+                    { text: 'Oxygen', correct: true },
+                    { text: 'Gold', correct: false },
+                    { text: 'Osmium', correct: false },
+                    { text: 'Oxium', correct: false }
+                ]
+            },
+            {
+                question: 'In which continent is the country of Egypt located?',
+                answers: [
+                    { text: 'Africa', correct: true },
+                    { text: 'Asia', correct: false },
+                    { text: 'Europe', correct: false },
+                    { text: 'Australia', correct: false }
+                ]
+            },
+            {
+                question: 'What is the hardest natural substance on Earth?',
+                answers: [
+                    { text: 'Diamond', correct: true },
+                    { text: 'Gold', correct: false },
+                    { text: 'Iron', correct: false },
+                    { text: 'Platinum', correct: false }
+                ]
+            },
+            {
+                question: 'Who discovered penicillin?',
+                answers: [
+                    { text: 'Alexander Fleming', correct: true },
+                    { text: 'Marie Curie', correct: false },
+                    { text: 'Isaac Newton', correct: false },
+                    { text: 'Albert Einstein', correct: false }
+                ]
+            },
+            {
+                question: 'What is the tallest mountain in the world?',
+                answers: [
+                    { text: 'Mount Everest', correct: true },
+                    { text: 'K2', correct: false },
+                    { text: 'Kangchenjunga', correct: false },
+                    { text: 'Lhotse', correct: false }
+                ]
+            },
+            {
+                question: 'Which planet is known as the Morning Star or the Evening Star?',
+                answers: [
+                    { text: 'Venus', correct: true },
+                    { text: 'Mercury', correct: false },
+                    { text: 'Mars', correct: false },
+                    { text: 'Jupiter', correct: false }
+                ]
+            },
+            {
+                question: 'What is the most widely spoken language in the world?',
+                answers: [
+                    { text: 'Mandarin Chinese', correct: true },
+                    { text: 'English', correct: false },
+                    { text: 'Spanish', correct: false },
+                    { text: 'Hindi', correct: false }
+                ]
+            },
+            {
+                question: 'Who was the first person to walk on the moon?',
+                answers: [
+                    { text: 'Neil Armstrong', correct: true },
+                    { text: 'Buzz Aldrin', correct: false },
+                    { text: 'Yuri Gagarin', correct: false },
+                    { text: 'Alan Shepard', correct: false }
+                ]
+            },
+            {
+                question: 'What is the largest desert in the world?',
+                answers: [
+                    { text: 'Sahara Desert', correct: true },
+                    { text: 'Gobi Desert', correct: false },
+                    { text: 'Kalahari Desert', correct: false },
+                    { text: 'Arctic Desert', correct: false }
+                ]
+            },
+            {
+                question: 'Who is known as the father of computers?',
+                answers: [
+                    { text: 'Charles Babbage', correct: true },
+                    { text: 'Alan Turing', correct: false },
+                    { text: 'John von Neumann', correct: false },
+                    { text: 'Bill Gates', correct: false }
+                ]
+            },
+            {
+                question: 'What is the largest bone in the human body?',
+                answers: [
+                    { text: 'Femur', correct: true },
+                    { text: 'Humerus', correct: false },
+                    { text: 'Tibia', correct: false },
+                    { text: 'Fibula', correct: false }
+                ]
+            },
+            {
+                question: 'Which country is the largest by area?',
+                answers: [
+                    { text: 'Russia', correct: true },
+                    { text: 'Canada', correct: false },
+                    { text: 'China', correct: false },
+                    { text: 'United States', correct: false }
+                ]
+            },
+            {
+                question: 'What is the smallest unit of matter?',
+                answers: [
+                    { text: 'Atom', correct: true },
+                    { text: 'Molecule', correct: false },
+                    { text: 'Proton', correct: false },
+                    { text: 'Neutron', correct: false }
+                ]
+            },
+            {
+                question: 'Who invented the light bulb?',
+                answers: [
+                    { text: 'Thomas Edison', correct: true },
+                    { text: 'Nikola Tesla', correct: false },
+                    { text: 'Alexander Graham Bell', correct: false },
+                    { text: 'George Westinghouse', correct: false }
+                ]
+            },
+            {
+                question: 'What is the most abundant gas in the Earth\'s atmosphere?',
+                answers: [
+                    { text: 'Nitrogen', correct: true },
+                    { text: 'Oxygen', correct: false },
+                    { text: 'Carbon Dioxide', correct: false },
+                    { text: 'Hydrogen', correct: false }
+                ]
+            },
+            {
+                question: 'Which country is known for the kangaroo?',
+                answers: [
+                    { text: 'Australia', correct: true },
+                    { text: 'New Zealand', correct: false },
+                    { text: 'South Africa', correct: false },
+                    { text: 'Canada', correct: false }
+                ]
+            },
+            {
+                question: 'What is the chemical formula for water?',
+                answers: [
+                    { text: 'H2O', correct: true },
+                    { text: 'CO2', correct: false },
+                    { text: 'O2', correct: false },
+                    { text: 'H2', correct: false }
+                ]
+            },
+            {
+                question: 'Who wrote "To Kill a Mockingbird"?',
+                answers: [
+                    { text: 'Harper Lee', correct: true },
+                    { text: 'Mark Twain', correct: false },
+                    { text: 'Ernest Hemingway', correct: false },
+                    { text: 'F. Scott Fitzgerald', correct: false }
+                ]
+            },
+            {
+                question: 'Which planet is closest to the sun?',
+                answers: [
+                    { text: 'Mercury', correct: true },
+                    { text: 'Venus', correct: false },
+                    { text: 'Earth', correct: false },
+                    { text: 'Mars', correct: false }
+                ]
+            },
+            {
+                question: 'What is the largest mammal in the world?',
+                answers: [
+                    { text: 'Blue Whale', correct: true },
+                    { text: 'Elephant', correct: false },
+                    { text: 'Giraffe', correct: false },
+                    { text: 'Hippopotamus', correct: false }
+                ]
+            },
+            {
+                question: 'What is the primary source of energy for the Earth?',
+                answers: [
+                    { text: 'The Sun', correct: true },
+                    { text: 'The Moon', correct: false },
+                    { text: 'Nuclear Power', correct: false },
+                    { text: 'Geothermal Energy', correct: false }
+                ]
+            },
+            {
+                question: 'Who wrote the "Harry Potter" series?',
+                answers: [
+                    { text: 'J.K. Rowling', correct: true },
+                    { text: 'J.R.R. Tolkien', correct: false },
+                    { text: 'George R.R. Martin', correct: false },
+                    { text: 'Suzanne Collins', correct: false }
+                ]
+            },
+            {
+                question: 'What is the largest island in the world?',
+                answers: [
+                    { text: 'Greenland', correct: true },
+                    { text: 'Australia', correct: false },
+                    { text: 'New Guinea', correct: false },
+                    { text: 'Borneo', correct: false }
+                ]
+            },
+            {
+                question: 'Who was the first president of the United States?',
+                answers: [
+                    { text: 'George Washington', correct: true },
+                    { text: 'Thomas Jefferson', correct: false },
+                    { text: 'John Adams', correct: false },
+                    { text: 'James Madison', correct: false }
+                ]
+            },
+            {
+                question: 'What is the boiling point of water?',
+                answers: [
+                    { text: '100°C', correct: true },
+                    { text: '0°C', correct: false },
+                    { text: '50°C', correct: false },
+                    { text: '200°C', correct: false }
+                ]
+            },
+            {
+                question: 'Which animal is known as the "King of the Jungle"?',
+                answers: [
+                    { text: 'Lion', correct: true },
+                    { text: 'Tiger', correct: false },
+                    { text: 'Elephant', correct: false },
+                    { text: 'Gorilla', correct: false }
+                ]
+            },
+            {
+                question: 'Who developed the theory of relativity?',
+                answers: [
+                    { text: 'Albert Einstein', correct: true },
+                    { text: 'Isaac Newton', correct: false },
+                    { text: 'Galileo Galilei', correct: false },
+                    { text: 'Niels Bohr', correct: false }
+                ]
+            },
+            {
+                question: 'What is the hardest natural substance on Earth?',
+                answers: [
+                    { text: 'Diamond', correct: true },
+                    { text: 'Gold', correct: false },
+                    { text: 'Iron', correct: false },
+                    { text: 'Platinum', correct: false }
+                ]
+            },
+            {
+                question: 'Who discovered penicillin?',
+                answers: [
+                    { text: 'Alexander Fleming', correct: true },
+                    { text: 'Marie Curie', correct: false },
+                    { text: 'Isaac Newton', correct: false },
+                    { text: 'Albert Einstein', correct: false }
+                ]
+            },
+            {
+                question: 'What is the tallest mountain in the world?',
+                answers: [
+                    { text: 'Mount Everest', correct: true },
+                    { text: 'K2', correct: false },
+                    { text: 'Kangchenjunga', correct: false },
+                    { text: 'Lhotse', correct: false }
+                ]
+            },
+            {
+                question: 'Which planet is known as the Morning Star or the Evening Star?',
+                answers: [
+                    { text: 'Venus', correct: true },
+                    { text: 'Mercury', correct: false },
+                    { text: 'Mars', correct: false },
+                    { text: 'Jupiter', correct: false }
+                ]
+            },
+            {
+                question: 'What is the most widely spoken language in the world?',
+                answers: [
+                    { text: 'Mandarin Chinese', correct: true },
+                    { text: 'English', correct: false },
+                    { text: 'Spanish', correct: false },
+                    { text: 'Hindi', correct: false }
+                ]
+            },
+            {
+                question: 'Who was the first person to walk on the moon?',
+                answers: [
+                    { text: 'Neil Armstrong', correct: true },
+                    { text: 'Buzz Aldrin', correct: false },
+                    { text: 'Yuri Gagarin', correct: false },
+                    { text: 'Alan Shepard', correct: false }
+                ]
+            },
+            {
+                question: 'What is the largest desert in the world?',
+                answers: [
+                    { text: 'Sahara Desert', correct: true },
+                    { text: 'Gobi Desert', correct: false },
+                    { text: 'Kalahari Desert', correct: false },
+                    { text: 'Arctic Desert', correct: false }
+                ]
+            },
+            {
+                question: 'Who is known as the father of computers?',
+                answers: [
+                    { text: 'Charles Babbage', correct: true },
+                    { text: 'Alan Turing', correct: false },
+                    { text: 'John von Neumann', correct: false },
+                    { text: 'Bill Gates', correct: false }
+                ]
+            },
+            {
+                question: 'What is the largest bone in the human body?',
+                answers: [
+                    { text: 'Femur', correct: true },
+                    { text: 'Humerus', correct: false },
+                    { text: 'Tibia', correct: false },
+                    { text: 'Fibula', correct: false }
+                ]
+            },
+            {
+                question: 'Which country is the largest by area?',
+                answers: [
+                    { text: 'Russia', correct: true },
+                    { text: 'Canada', correct: false },
+                    { text: 'China', correct: false },
+                    { text: 'United States', correct: false }
+                ]
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        $(document).ready(function() {
+            showQuestion();
+
+            $('#next-button').click(function() {
+                if (currentQuestionIndex < questions.length - 1) {
+                    currentQuestionIndex++;
+                    showQuestion();
+                } else {
+                    showResults();
+                }
+            });
+
+            $('#prev-button').click(function() {
+                if (currentQuestionIndex > 0) {
+                    currentQuestionIndex--;
+                    showQuestion();
+                }
+            });
+
+            $('#restart-button').click(function() {
+                window.location.reload()
+                // currentQuestionIndex = 0;
+                // score = 0;
+                // userAnswers.length = 0;
+                // $('#result-container').addClass('hidden');
+                // $('#quiz-container').removeClass('hidden');
+                // showQuestion();
+            });
+        });
+
+        function showQuestion() {
+            resetState();
+            const currentQuestion = questions[currentQuestionIndex];
+            $('#question').text(currentQuestion.question);
+            currentQuestion.answers.forEach((answer, index) => {
+                const button = $('<button class="btn btn-outline-primary mb-2"></button>');
+                button.text(answer.text);
+                button.click(() => selectAnswer(index));
+                $('#answer-buttons').append(button);
+                if (userAnswers[currentQuestionIndex] !== undefined) {
+                    button.addClass(userAnswers[currentQuestionIndex] === index ? (answer.correct ? 'btn-success' : 'btn-danger') : 'btn-outline-primary');
+                    button.prop('disabled', true);
+                }
+            });
+            $('#next-button').toggleClass('hidden', currentQuestionIndex === questions.length - 1);
+            $('#prev-button').toggleClass('hidden', currentQuestionIndex === 0);
+            $('#next-button').text(currentQuestionIndex === questions.length - 1 ? 'Finish' : 'Next');
+        }
+
+        function resetState() {
+            $('#answer-buttons').empty();
+        }
+
+        function selectAnswer(index) {
+            const currentQuestion = questions[currentQuestionIndex];
+            if (userAnswers[currentQuestionIndex] === undefined) {
+                userAnswers[currentQuestionIndex] = index;
+                if (currentQuestion.answers[index].correct) {
+                    score++;
+                }
+            }
+            console.log('Score after selecting answer:', score); // Debugging log
+            showQuestion();
+        }
+
+        function showResults() {
+            console.log('Final score:', score); // Debugging log
+            $('#quiz-container').addClass('hidden');
+            $('#result-container').removeClass('hidden');
+            $('#score').text(`${score} / ${questions.length}`);
+        }
+    </script>
+</body>
+</html>

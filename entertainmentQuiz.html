@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* .hidden {
+            display: none;
+        } */
+
+        ul{
+            display: flex;
+        justify-content: space-around;
+        }
+
+        ul li{
+            list-style: none;
+        }
+        a {
+            text-decoration: none !important;
+            color: black !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Simple Quiz App</h1>
+        <div class="category">
+            <h3>category</h3>
+            <ul class="list-style-type-none">
+                <li ><a href="index.html" target="" rel="noopener noreferrer">Random</a></li>
+                <li style="text-decoration: underline;"><a href="#">Entertainment</a></li>
+                <li><a href="./sportQuiz.html">Sport</a></li>
+            </ul>
+        </div>
+        <hr>
+        <div id="quiz-container" class="mt-4">
+            <div id="question-container" class="mb-4">
+                <h3 id="question">Question text</h3>
+                <div id="answer-buttons" class="btn-group-vertical"></div>
+            </div>
+            <div class="d-flex justify-content-between">
+                <button id="prev-button" class="btn btn-secondary hidden">Previous</button>
+                <button id="next-button" class="btn btn-primary hidden">Next</button>
+            </div>
+        </div>
+        <div id="result-container d-flex justify-content-center" class="hidden">
+            <h3>Your Score: <span id="score"></span></h3>
+            <button id="restart-button" class="btn btn-danger text-center" >Restart</button>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        const questions = [
+        {
+        question: 'Who played Jack Dawson in the film "Titanic"?',
+        answers: [
+            { text: 'Leonardo DiCaprio', correct: true },
+            { text: 'Brad Pitt', correct: false },
+            { text: 'Johnny Depp', correct: false },
+            { text: 'Tom Cruise', correct: false }
+        ]
+    },
+    {
+        question: 'Which TV series features the fictional coffee shop Central Perk?',
+        answers: [
+            { text: 'Friends', correct: true },
+            { text: 'Seinfeld', correct: false },
+            { text: 'How I Met Your Mother', correct: false },
+            { text: 'The Big Bang Theory', correct: false }
+        ]
+    },
+    {
+        question: 'Who directed the "Lord of the Rings" trilogy?',
+        answers: [
+            { text: 'Peter Jackson', correct: true },
+            { text: 'Steven Spielberg', correct: false },
+            { text: 'James Cameron', correct: false },
+            { text: 'Christopher Nolan', correct: false }
+        ]
+    },
+    {
+        question: 'Which movie features the song "My Heart Will Go On"?',
+        answers: [
+            { text: 'Titanic', correct: true },
+            { text: 'The Bodyguard', correct: false },
+            { text: 'Pretty Woman', correct: false },
+            { text: 'Ghost', correct: false }
+        ]
+    },
+    {
+        question: 'Who won the first season of "American Idol"?',
+        answers: [
+            { text: 'Kelly Clarkson', correct: true },
+            { text: 'Carrie Underwood', correct: false },
+            { text: 'Clay Aiken', correct: false },
+            { text: 'Justin Guarini', correct: false }
+        ]
+    },
+    {
+        question: 'In which film did Tom Hanks play a character stranded on an island?',
+        answers: [
+            { text: 'Cast Away', correct: true },
+            { text: 'Forrest Gump', correct: false },
+            { text: 'Saving Private Ryan', correct: false },
+            { text: 'Big', correct: false }
+        ]
+    },
+    {
+        question: 'Which actress played Hermione Granger in the "Harry Potter" series?',
+        answers: [
+            { text: 'Emma Watson', correct: true },
+            { text: 'Emma Stone', correct: false },
+            { text: 'Kristen Stewart', correct: false },
+            { text: 'Jennifer Lawrence', correct: false }
+        ]
+    },
+    {
+        question: 'Who sang "Thriller"?',
+        answers: [
+            { text: 'Michael Jackson', correct: true },
+            { text: 'Prince', correct: false },
+            { text: 'Madonna', correct: false },
+            { text: 'Whitney Houston', correct: false }
+        ]
+    },
+    {
+        question: 'Which movie features the line, "Here\'s looking at you, kid"?',
+        answers: [
+            { text: 'Casablanca', correct: true },
+            { text: 'Gone with the Wind', correct: false },
+            { text: 'Citizen Kane', correct: false },
+            { text: 'The Godfather', correct: false }
+        ]
+    },
+    {
+        question: 'Who played the Joker in "The Dark Knight"?',
+        answers: [
+            { text: 'Heath Ledger', correct: true },
+            { text: 'Joaquin Phoenix', correct: false },
+            { text: 'Jack Nicholson', correct: false },
+            { text: 'Jared Leto', correct: false }
+        ]
+    },
+    {
+        question: 'Which animated movie features a song called "Let It Go"?',
+        answers: [
+            { text: 'Frozen', correct: true },
+            { text: 'Moana', correct: false },
+            { text: 'Tangled', correct: false },
+            { text: 'Brave', correct: false }
+        ]
+    },
+    {
+        question: 'Who created the TV series "Game of Thrones"?',
+        answers: [
+            { text: 'David Benioff and D.B. Weiss', correct: true },
+            { text: 'J.J. Abrams', correct: false },
+            { text: 'Vince Gilligan', correct: false },
+            { text: 'Shonda Rhimes', correct: false }
+        ]
+    },
+    {
+        question: 'Which film won the Oscar for Best Picture in 2020?',
+        answers: [
+            { text: 'Parasite', correct: true },
+            { text: '1917', correct: false },
+            { text: 'Joker', correct: false },
+            { text: 'Once Upon a Time in Hollywood', correct: false }
+        ]
+    },
+    {
+        question: 'Who played Forrest Gump in the movie "Forrest Gump"?',
+        answers: [
+            { text: 'Tom Hanks', correct: true },
+            { text: 'Robin Wright', correct: false },
+            { text: 'Gary Sinise', correct: false },
+            { text: 'Mykelti Williamson', correct: false }
+        ]
+    },
+    {
+        question: 'Which actor voiced the character of Woody in "Toy Story"?',
+        answers: [
+            { text: 'Tom Hanks', correct: true },
+            { text: 'Tim Allen', correct: false },
+            { text: 'Billy Crystal', correct: false },
+            { text: 'John Goodman', correct: false }
+        ]
+    },
+    {
+        question: 'Which band released the album "Abbey Road"?',
+        answers: [
+            { text: 'The Beatles', correct: true },
+            { text: 'The Rolling Stones', correct: false },
+            { text: 'Pink Floyd', correct: false },
+            { text: 'The Who', correct: false }
+        ]
+    },
+    {
+        question: 'Who won the Best Actor Oscar for "Bohemian Rhapsody"?',
+        answers: [
+            { text: 'Rami Malek', correct: true },
+            { text: 'Bradley Cooper', correct: false },
+            { text: 'Christian Bale', correct: false },
+            { text: 'Viggo Mortensen', correct: false }
+        ]
+    },
+    {
+        question: 'Which film is based on the life of boxer Jake LaMotta?',
+        answers: [
+            { text: 'Raging Bull', correct: true },
+            { text: 'Rocky', correct: false },
+            { text: 'Million Dollar Baby', correct: false },
+            { text: 'Cinderella Man', correct: false }
+        ]
+    },
+    {
+        question: 'Who played Tony Stark in the Marvel Cinematic Universe?',
+        answers: [
+            { text: 'Robert Downey Jr.', correct: true },
+            { text: 'Chris Evans', correct: false },
+            { text: 'Chris Hemsworth', correct: false },
+            { text: 'Mark Ruffalo', correct: false }
+        ]
+    },
+    {
+        question: 'Which musical features the song "Defying Gravity"?',
+        answers: [
+            { text: 'Wicked', correct: true },
+            { text: 'The Phantom of the Opera', correct: false },
+            { text: 'Les Misérables', correct: false },
+            { text: 'Cats', correct: false }
+        ]
+    },
+    {
+        question: 'Who directed "Pulp Fiction"?',
+        answers: [
+            { text: 'Quentin Tarantino', correct: true },
+            { text: 'Martin Scorsese', correct: false },
+            { text: 'Steven Spielberg', correct: false },
+            { text: 'Francis Ford Coppola', correct: false }
+        ]
+    },
+    {
+        question: 'Which film features the character Jack Sparrow?',
+        answers: [
+            { text: 'Pirates of the Caribbean', correct: true },
+            { text: 'Indiana Jones', correct: false },
+            { text: 'The Mummy', correct: false },
+            { text: 'Jurassic Park', correct: false }
+        ]
+    },
+    {
+        question: 'Who played the role of Black Widow in the Marvel movies?',
+        answers: [
+            { text: 'Scarlett Johansson', correct: true },
+            { text: 'Elizabeth Olsen', correct: false },
+            { text: 'Brie Larson', correct: false },
+            { text: 'Zoe Saldana', correct: false }
+        ]
+    },
+    {
+        question: 'Which movie features the quote "You can\'t handle the truth!"?',
+        answers: [
+            { text: 'A Few Good Men', correct: true },
+            { text: 'The Godfather', correct: false },
+            { text: 'Goodfellas', correct: false },
+            { text: 'Scarface', correct: false }
+        ]
+    },
+    {
+        question: 'Who won the first season of "The Voice"?',
+        answers: [
+            { text: 'Javier Colon', correct: true },
+            { text: 'Dia Frampton', correct: false },
+            { text: 'Beverly McClellan', correct: false },
+            { text: 'Vicci Martinez', correct: false }
+        ]
+    },
+    {
+        question: 'Which movie won the Oscar for Best Picture in 1994?',
+        answers: [
+            { text: 'Forrest Gump', correct: true },
+            { text: 'Pulp Fiction', correct: false },
+            { text: 'The Shawshank Redemption', correct: false },
+            { text: 'Four Weddings and a Funeral', correct: false }
+        ]
+    },
+    {
+        question: 'Who is the lead singer of the band U2?',
+        answers: [
+            { text: 'Bono', correct: true },
+            { text: 'The Edge', correct: false },
+            { text: 'Larry Mullen Jr.', correct: false },
+            { text: 'Adam Clayton', correct: false }
+        ]
+    },
+    {
+        question: 'Which film is based on the book "The Hobbit"?',
+        answers: [
+            { text: 'The Hobbit: An Unexpected Journey', correct: true },
+            { text: 'The Lord of the Rings: The Fellowship of the Ring', correct: false },
+            { text: 'Harry Potter and the Sorcerer\'s Stone', correct: false },
+            { text: 'The Chronicles of Narnia: The Lion, the Witch and the Wardrobe', correct: false }
+        ]
+    },
+    {
+        question: 'Who played the character of Katniss Everdeen in "The Hunger Games" series?',
+        answers: [
+            { text: 'Jennifer Lawrence', correct: true },
+            { text: 'Kristen Stewart', correct: false },
+            { text: 'Shailene Woodley', correct: false },
+            { text: 'Emma Stone', correct: false }
+        ]
+    },
+    {
+        question: 'Which TV show is set in the fictional town of Hawkins, Indiana?',
+        answers: [
+            { text: 'Stranger Things', correct: true },
+            { text: 'Riverdale', correct: false },
+            { text: 'Twin Peaks', correct: false },
+            { text: 'Buffy the Vampire Slayer', correct: false }
+        ]
+    },
+    {
+        question: 'Who directed the 1994 film "Pulp Fiction"?',
+        answers: [
+            { text: 'Quentin Tarantino', correct: true },
+            { text: 'Martin Scorsese', correct: false },
+            { text: 'Steven Spielberg', correct: false },
+            { text: 'Francis Ford Coppola', correct: false }
+        ]
+    },
+    {
+        question: 'Who starred as the titular character in the "Lara Croft: Tomb Raider" movies?',
+        answers: [
+            { text: 'Angelina Jolie', correct: true },
+            { text: 'Alicia Vikander', correct: false },
+            { text: 'Milla Jovovich', correct: false },
+            { text: 'Kate Beckinsale', correct: false }
+        ]
+    },
+    {
+        question: 'Which film features the song "Circle of Life"?',
+        answers: [
+            { text: 'The Lion King', correct: true },
+            { text: 'Aladdin', correct: false },
+            { text: 'Beauty and the Beast', correct: false },
+            { text: 'The Little Mermaid', correct: false }
+        ]
+    },
+    {
+        question: 'Who played the character of Michael Corleone in "The Godfather" series?',
+        answers: [
+            { text: 'Al Pacino', correct: true },
+            { text: 'Marlon Brando', correct: false },
+            { text: 'Robert De Niro', correct: false },
+            { text: 'James Caan', correct: false }
+        ]
+    },
+    {
+        question: 'Which actor voiced Simba in the 1994 animated movie "The Lion King"?',
+        answers: [
+            { text: 'Matthew Broderick', correct: true },
+            { text: 'Jeremy Irons', correct: false },
+            { text: 'Nathan Lane', correct: false },
+            { text: 'James Earl Jones', correct: false }
+        ]
+    },
+    {
+        question: 'Who directed the film "Inception"?',
+        answers: [
+            { text: 'Christopher Nolan', correct: true },
+            { text: 'David Fincher', correct: false },
+            { text: 'James Cameron', correct: false },
+            { text: 'Ridley Scott', correct: false }
+        ]
+    },
+    {
+        question: 'Which actress won an Oscar for her role in "La La Land"?',
+        answers: [
+            { text: 'Emma Stone', correct: true },
+            { text: 'Emma Watson', correct: false },
+            { text: 'Jennifer Lawrence', correct: false },
+            { text: 'Natalie Portman', correct: false }
+        ]
+    },
+    {
+        question: 'Who played the titular character in the 2019 movie "Joker"?',
+        answers: [
+            { text: 'Joaquin Phoenix', correct: true },
+            { text: 'Heath Ledger', correct: false },
+            { text: 'Jared Leto', correct: false },
+            { text: 'Jack Nicholson', correct: false }
+        ]
+    },
+    {
+        question: 'Which film features the character Buzz Lightyear?',
+        answers: [
+            { text: 'Toy Story', correct: true },
+            { text: 'Finding Nemo', correct: false },
+            { text: 'Monsters, Inc.', correct: false },
+            { text: 'Cars', correct: false }
+        ]
+    },
+    {
+        question: 'Who directed the 2017 film "Get Out"?',
+        answers: [
+            { text: 'Jordan Peele', correct: true },
+            { text: 'Ari Aster', correct: false },
+            { text: 'David Gordon Green', correct: false },
+            { text: 'James Wan', correct: false }
+        ]
+    },
+    {
+        question: 'Which actor played the character of Deadpool in the "Deadpool" movies?',
+        answers: [
+            { text: 'Ryan Reynolds', correct: true },
+            { text: 'Hugh Jackman', correct: false },
+            { text: 'Chris Hemsworth', correct: false },
+            { text: 'Robert Downey Jr.', correct: false }
+        ]
+    },
+    {
+        question: 'Which movie features the quote "May the Force be with you"?',
+        answers: [
+            { text: 'Star Wars', correct: true },
+            { text: 'Star Trek', correct: false },
+            { text: 'The Matrix', correct: false },
+            { text: 'Blade Runner', correct: false }
+        ]
+    },
+    {
+        question: 'Who played the character of Wolverine in the "X-Men" series?',
+        answers: [
+            { text: 'Hugh Jackman', correct: true },
+            { text: 'Ryan Reynolds', correct: false },
+            { text: 'Chris Evans', correct: false },
+            { text: 'Chris Hemsworth', correct: false }
+        ]
+    },
+    {
+        question: 'Which film features the character Jack Sparrow?',
+        answers: [
+            { text: 'Pirates of the Caribbean', correct: true },
+            { text: 'Indiana Jones', correct: false },
+            { text: 'The Mummy', correct: false },
+            { text: 'Jurassic Park', correct: false }
+        ]
+    },
+    {
+        question: 'Which TV show is set in the fictional town of Springfield?',
+        answers: [
+            { text: 'The Simpsons', correct: true },
+            { text: 'Family Guy', correct: false },
+            { text: 'South Park', correct: false },
+            { text: 'King of the Hill', correct: false }
+        ]
+    },
+    {
+        question: 'Who directed the 2015 film "The Revenant"?',
+        answers: [
+            { text: 'Alejandro González Iñárritu', correct: true },
+            { text: 'Martin Scorsese', correct: false },
+            { text: 'Quentin Tarantino', correct: false },
+            { text: 'Steven Spielberg', correct: false }
+        ]
+    }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        $(document).ready(function() {
+            showQuestion();
+
+            $('#next-button').click(function() {
+                if (currentQuestionIndex < questions.length - 1) {
+                    currentQuestionIndex++;
+                    showQuestion();
+                } else {
+                    showResults();
+                }
+            });
+
+            $('#prev-button').click(function() {
+                if (currentQuestionIndex > 0) {
+                    currentQuestionIndex--;
+                    showQuestion();
+                }
+            });
+
+            $('#restart-button').click(function() {
+                window.location.reload()
+                // currentQuestionIndex = 0;
+                // score = 0;
+                // userAnswers.length = 0;
+                // $('#result-container').addClass('hidden');
+                // $('#quiz-container').removeClass('hidden');
+                // showQuestion();
+            });
+        });
+
+        function showQuestion() {
+            resetState();
+            const currentQuestion = questions[currentQuestionIndex];
+            $('#question').text(currentQuestion.question);
+            currentQuestion.answers.forEach((answer, index) => {
+                const button = $('<button class="btn btn-outline-primary mb-2"></button>');
+                button.text(answer.text);
+                button.click(() => selectAnswer(index));
+                $('#answer-buttons').append(button);
+                if (userAnswers[currentQuestionIndex] !== undefined) {
+                    button.addClass(userAnswers[currentQuestionIndex] === index ? (answer.correct ? 'btn-success' : 'btn-danger') : 'btn-outline-primary');
+                    button.prop('disabled', true);
+                }
+            });
+            $('#next-button').toggleClass('hidden', currentQuestionIndex === questions.length - 1);
+            $('#prev-button').toggleClass('hidden', currentQuestionIndex === 0);
+            $('#next-button').text(currentQuestionIndex === questions.length - 1 ? 'Finish' : 'Next');
+        }
+
+        function resetState() {
+            $('#answer-buttons').empty();
+        }
+
+        function selectAnswer(index) {
+            const currentQuestion = questions[currentQuestionIndex];
+            if (userAnswers[currentQuestionIndex] === undefined) {
+                userAnswers[currentQuestionIndex] = index;
+                if (currentQuestion.answers[index].correct) {
+                    score++;
+                }
+            }
+            console.log('Score after selecting answer:', score); // Debugging log
+            showQuestion();
+        }
+
+        function showResults() {
+            console.log('Final score:', score); // Debugging log
+            $('#quiz-container').addClass('hidden');
+            $('#result-container').removeClass('hidden');
+            $('#score').text(`${score} / ${questions.length}`);
+        }
+    </script>
+</body>
+</html>
